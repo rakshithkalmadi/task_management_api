@@ -4,13 +4,15 @@ from .models import User, Project, Task, Log, Notification, Comment, Attachment,
 from .schemas import UserCreate, ProjectCreate, TaskCreate, LogCreate, NotificationCreate, CommentCreate, AttachmentCreate, ActivityCreate, TimeEntryCreate, CustomFieldCreate
 from .utils import get_password_hash  # Updated import
 from constants import MONGO_URI
-
+import datetime
 client = MongoClient(MONGO_URI)
 db = client.task_management
 
 def create_user(user: UserCreate):
     user_dict = user.dict()
     user_dict["password"] = get_password_hash(user_dict["password"])
+    user_dict["created_at"] = datetime.datetime.now()
+    user_dict["updated_at"] = datetime.datetime.now()
     db.users.insert_one(user_dict)
     return user_dict
 

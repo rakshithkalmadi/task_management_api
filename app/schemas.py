@@ -11,6 +11,8 @@ class UserCreate(BaseModel):
     name: str
     email: str
     password: str
+    created_at: datetime
+    updated_at: datetime
 
 class UserUpdate(BaseModel):
     name: Optional[str] = None
@@ -19,6 +21,7 @@ class UserUpdate(BaseModel):
     profile_picture: Optional[str] = None
 
 class ProjectCreate(BaseModel):
+    project_id: str
     name: str
     description: str
     start_date: datetime
@@ -27,6 +30,9 @@ class ProjectCreate(BaseModel):
     priority: str
     status: str
     tags: List[str]
+    tasks: List[str]
+    created_at: datetime
+    updated_at: datetime
 
 class ProjectUpdate(BaseModel):
     name: Optional[str] = None
@@ -42,6 +48,7 @@ class ProjectUpdate(BaseModel):
     milestones: Optional[List[str]] = None
 
 class TaskCreate(BaseModel):
+    task_id: str
     title: str
     description: str
     status: str
@@ -49,6 +56,8 @@ class TaskCreate(BaseModel):
     due_date: datetime
     parent_id: Optional[str] = None
     sub_tasks: List[str]
+    created_at: datetime
+    updated_at: datetime
 
 class TaskUpdate(BaseModel):
     title: Optional[str] = None
