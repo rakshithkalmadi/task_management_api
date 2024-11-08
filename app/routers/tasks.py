@@ -1,5 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from typing import List
+"""Tasks
+
+Raises:
+    HTTPException: _description_
+    HTTPException: _description_
+    HTTPException: _description_
+
+Returns:
+    _type_: _description_
+"""
+
+from fastapi import APIRouter, Depends, HTTPException
 from ..schemas import TaskCreate, TaskUpdate
 from ..crud import create_task, get_task, update_task, delete_task
 from ..auth import get_current_active_user
@@ -12,11 +22,32 @@ router = APIRouter()
 def create_new_task(
     task: TaskCreate, current_user: User = Depends(get_current_active_user)
 ):
+    """create_new_task
+
+    Args:
+        task (TaskCreate): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Returns:
+        _type_: _description_
+    """
     return create_task(task)
 
 
 @router.get("/{task_id}", response_model=Task)
 def read_task(task_id: str, current_user: User = Depends(get_current_active_user)):
+    """read_task
+
+    Args:
+        task_id (str): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        _type_: _description_
+    """
     db_task = get_task(task_id)
     if db_task is None:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -29,6 +60,19 @@ def update_existing_task(
     task: TaskUpdate,
     current_user: User = Depends(get_current_active_user),
 ):
+    """update_existing_task
+
+    Args:
+        task_id (str): _description_
+        task (TaskUpdate): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        _type_: _description_
+    """
     db_task = get_task(task_id)
     if db_task is None:
         raise HTTPException(status_code=404, detail="Task not found")
@@ -39,6 +83,18 @@ def update_existing_task(
 def delete_existing_task(
     task_id: str, current_user: User = Depends(get_current_active_user)
 ):
+    """delete_existing_task
+
+    Args:
+        task_id (str): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        _type_: _description_
+    """
     db_task = get_task(task_id)
     if db_task is None:
         raise HTTPException(status_code=404, detail="Task not found")

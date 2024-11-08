@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException
 from ..schemas import AttachmentCreate, AttachmentUpdate
 from ..crud import (
     create_attachment,
@@ -17,6 +16,15 @@ router = APIRouter()
 def create_new_attachment(
     attachment: AttachmentCreate, current_user: User = Depends(get_current_active_user)
 ):
+    """create_new_attachment
+
+    Args:
+        attachment (AttachmentCreate): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Returns:
+        _type_: _description_
+    """
     return create_attachment(attachment)
 
 
@@ -24,6 +32,18 @@ def create_new_attachment(
 def read_attachment(
     attachment_id: str, current_user: User = Depends(get_current_active_user)
 ):
+    """read_attachment
+
+    Args:
+        attachment_id (str): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        _type_: _description_
+    """
     db_attachment = get_attachment(attachment_id)
     if db_attachment is None:
         raise HTTPException(status_code=404, detail="Attachment not found")
@@ -36,6 +56,19 @@ def update_existing_attachment(
     attachment: AttachmentUpdate,
     current_user: User = Depends(get_current_active_user),
 ):
+    """update_existing_attachment
+
+    Args:
+        attachment_id (str): _description_
+        attachment (AttachmentUpdate): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        _type_: _description_
+    """
     db_attachment = get_attachment(attachment_id)
     if db_attachment is None:
         raise HTTPException(status_code=404, detail="Attachment not found")
@@ -46,6 +79,18 @@ def update_existing_attachment(
 def delete_existing_attachment(
     attachment_id: str, current_user: User = Depends(get_current_active_user)
 ):
+    """delete_existing_attachment
+
+    Args:
+        attachment_id (str): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        _type_: _description_
+    """
     db_attachment = get_attachment(attachment_id)
     if db_attachment is None:
         raise HTTPException(status_code=404, detail="Attachment not found")

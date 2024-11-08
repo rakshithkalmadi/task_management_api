@@ -1,5 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException
 from ..schemas import NotificationCreate, NotificationUpdate
 from ..crud import (
     create_notification,
@@ -18,6 +17,15 @@ def create_new_notification(
     notification: NotificationCreate,
     current_user: User = Depends(get_current_active_user),
 ):
+    """create_new_notification
+
+    Args:
+        notification (NotificationCreate): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Returns:
+        _type_: _description_
+    """
     return create_notification(notification)
 
 
@@ -25,6 +33,18 @@ def create_new_notification(
 def read_notification(
     notification_id: str, current_user: User = Depends(get_current_active_user)
 ):
+    """read_notification
+
+    Args:
+        notification_id (str): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        _type_: _description_
+    """
     db_notification = get_notification(notification_id)
     if db_notification is None:
         raise HTTPException(status_code=404, detail="Notification not found")
@@ -37,6 +57,19 @@ def update_existing_notification(
     notification: NotificationUpdate,
     current_user: User = Depends(get_current_active_user),
 ):
+    """update_existing_notification
+
+    Args:
+        notification_id (str): _description_
+        notification (NotificationUpdate): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        _type_: _description_
+    """
     db_notification = get_notification(notification_id)
     if db_notification is None:
         raise HTTPException(status_code=404, detail="Notification not found")
@@ -47,6 +80,18 @@ def update_existing_notification(
 def delete_existing_notification(
     notification_id: str, current_user: User = Depends(get_current_active_user)
 ):
+    """delete_existing_notification
+
+    Args:
+        notification_id (str): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        _type_: _description_
+    """
     db_notification = get_notification(notification_id)
     if db_notification is None:
         raise HTTPException(status_code=404, detail="Notification not found")

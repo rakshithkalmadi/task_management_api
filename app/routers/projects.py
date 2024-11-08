@@ -1,5 +1,15 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from typing import List
+"""Projects
+
+Raises:
+    HTTPException: _description_
+    HTTPException: _description_
+    HTTPException: _description_
+
+Returns:
+    _type_: _description_
+"""
+
+from fastapi import APIRouter, Depends, HTTPException
 from ..schemas import ProjectCreate, ProjectUpdate
 from ..crud import create_project, get_project, update_project, delete_project
 from ..auth import get_current_active_user
@@ -19,6 +29,18 @@ def create_new_project(
 def read_project(
     project_id: str, current_user: User = Depends(get_current_active_user)
 ):
+    """read_project
+
+    Args:
+        project_id (str): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        _type_: _description_
+    """
     db_project = get_project(project_id)
     if db_project is None:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -31,6 +53,19 @@ def update_existing_project(
     project: ProjectUpdate,
     current_user: User = Depends(get_current_active_user),
 ):
+    """update_existing_project
+
+    Args:
+        project_id (str): _description_
+        project (ProjectUpdate): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        _type_: _description_
+    """
     db_project = get_project(project_id)
     if db_project is None:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -41,6 +76,18 @@ def update_existing_project(
 def delete_existing_project(
     project_id: str, current_user: User = Depends(get_current_active_user)
 ):
+    """delete_existing_project
+
+    Args:
+        project_id (str): _description_
+        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HTTPException: _description_
+
+    Returns:
+        _type_: _description_
+    """
     db_project = get_project(project_id)
     if db_project is None:
         raise HTTPException(status_code=404, detail="Project not found")
