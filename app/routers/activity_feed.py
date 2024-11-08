@@ -7,26 +7,40 @@ from ..models import Activity, User
 
 router = APIRouter()
 
+
 @router.post("/", response_model=Activity)
-def create_new_activity(activity: ActivityCreate, current_user: User = Depends(get_current_active_user)):
+def create_new_activity(
+    activity: ActivityCreate, current_user: User = Depends(get_current_active_user)
+):
     return create_activity(activity)
 
+
 @router.get("/{activity_id}", response_model=Activity)
-def read_activity(activity_id: str, current_user: User = Depends(get_current_active_user)):
+def read_activity(
+    activity_id: str, current_user: User = Depends(get_current_active_user)
+):
     db_activity = get_activity(activity_id)
     if db_activity is None:
         raise HTTPException(status_code=404, detail="Activity not found")
     return db_activity
 
+
 @router.put("/{activity_id}", response_model=Activity)
-def update_existing_activity(activity_id: str, activity: ActivityUpdate, current_user: User = Depends(get_current_active_user)):
+def update_existing_activity(
+    activity_id: str,
+    activity: ActivityUpdate,
+    current_user: User = Depends(get_current_active_user),
+):
     db_activity = get_activity(activity_id)
     if db_activity is None:
         raise HTTPException(status_code=404, detail="Activity not found")
     return update_activity(activity_id, activity)
 
+
 @router.delete("/{activity_id}", response_model=dict)
-def delete_existing_activity(activity_id: str, current_user: User = Depends(get_current_active_user)):
+def delete_existing_activity(
+    activity_id: str, current_user: User = Depends(get_current_active_user)
+):
     db_activity = get_activity(activity_id)
     if db_activity is None:
         raise HTTPException(status_code=404, detail="Activity not found")

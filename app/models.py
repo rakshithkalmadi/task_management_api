@@ -1,8 +1,20 @@
-from pydantic import BaseModel, Field
+"""
+Models for the Application
+
+"""
+
 from typing import List, Optional
 from datetime import datetime
+from pydantic import BaseModel
+
 
 class User(BaseModel):
+    """User Model
+
+    Args:
+        BaseModel : _description_
+    """
+
     user_id: str
     name: str
     email: str
@@ -12,7 +24,14 @@ class User(BaseModel):
     profile_picture: Optional[str] = None
     last_login: Optional[datetime] = None
 
+
 class Project(BaseModel):
+    """Project Model
+
+    Args:
+        BaseModel
+    """
+
     project_id: str
     name: str
     description: str
@@ -29,7 +48,14 @@ class Project(BaseModel):
     actual_cost: Optional[float] = None
     milestones: Optional[List[str]] = None
 
+
 class Task(BaseModel):
+    """Task Model
+
+    Args:
+        BaseModel (_type_): _description_
+    """
+
     task_id: str
     title: str
     description: str
@@ -44,35 +70,70 @@ class Task(BaseModel):
     actual_time: Optional[int] = None
     dependencies: Optional[List[str]] = None
 
+
 class Log(BaseModel):
+    """Log Model
+
+    Args:
+        BaseModel (_type_): _description_
+    """
+
     log_id: str
     operation: str
     description: str
     user_id: str
     timestamp: datetime
 
+
 class Notification(BaseModel):
+    """Notification Model
+
+    Args:
+        BaseModel (_type_): _description_
+    """
+
     notification_id: str
     user_id: str
     message: str
     read_status: bool
     created_at: datetime
 
+
 class Comment(BaseModel):
+    """Comment Model
+
+    Args:
+        BaseModel (_type_): _description_
+    """
+
     comment_id: str
     task_id: str
     user_id: str
     content: str
     created_at: datetime
 
+
 class Attachment(BaseModel):
+    """Attachment Model
+
+    Args:
+        BaseModel (_type_): _description_
+    """
+
     attachment_id: str
     task_id: str
     file_url: str
     uploaded_by: str
     uploaded_at: datetime
 
+
 class Activity(BaseModel):
+    """Activity Model
+
+    Args:
+        BaseModel (_type_): _description_
+    """
+
     activity_id: str
     user_id: str
     action: str
@@ -80,7 +141,14 @@ class Activity(BaseModel):
     entity_type: str
     timestamp: datetime
 
+
 class TimeEntry(BaseModel):
+    """TimeEntry Model
+
+    Args:
+        BaseModel (_type_): _description_
+    """
+
     time_entry_id: str
     task_id: str
     user_id: str
@@ -88,7 +156,14 @@ class TimeEntry(BaseModel):
     end_time: datetime
     duration: int
 
+
 class CustomField(BaseModel):
+    """CustomField Model
+
+    Args:
+        BaseModel (_type_): _description_
+    """
+
     field_id: str
     entity_type: str
     entity_id: str
