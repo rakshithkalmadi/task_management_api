@@ -31,6 +31,9 @@ def create_new_task(
     Returns:
         _type_: _description_
     """
+    db_task = get_task(task.task_id)
+    if db_task:
+        raise HTTPException(status_code=400, detail="Task already exists")
     return create_task(task)
 
 

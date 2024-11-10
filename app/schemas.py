@@ -42,8 +42,9 @@ class UserUpdate(BaseModel):
 
     name: Optional[str] = None
     email: Optional[str] = None
-    password: Optional[str] = None
+    # password: Optional[str] = None
     profile_picture: Optional[str] = None
+    updated_at: datetime
 
 
 class ProjectCreate(BaseModel):
@@ -62,7 +63,7 @@ class ProjectCreate(BaseModel):
     priority: str
     status: str
     tags: List[str]
-    tasks: List[str]
+    tasks: Optional[List[str]] = None
     created_at: datetime
     updated_at: datetime
 
@@ -82,9 +83,16 @@ class ProjectUpdate(BaseModel):
     priority: Optional[str] = None
     status: Optional[str] = None
     tags: Optional[List[str]] = None
-    budget: Optional[float] = None
-    actual_cost: Optional[float] = None
     milestones: Optional[List[str]] = None
+
+class ProjectTasks(BaseModel):
+    """Add Task to Project
+
+    Args:
+        BaseModel (_type_): _description_
+    """    
+    tasks: List[str]
+
 
 
 class TaskCreate(BaseModel):
@@ -101,7 +109,8 @@ class TaskCreate(BaseModel):
     priority: str
     due_date: datetime
     parent_id: Optional[str] = None
-    sub_tasks: List[str]
+    sub_tasks: Optional[List[str]] = None
+    tags: Optional[List[str]] = None
     created_at: datetime
     updated_at: datetime
 
@@ -120,6 +129,7 @@ class TaskUpdate(BaseModel):
     due_date: Optional[datetime] = None
     parent_id: Optional[str] = None
     sub_tasks: Optional[List[str]] = None
+    tags: Optional[List[str]] = None
     estimated_time: Optional[int] = None
     actual_time: Optional[int] = None
     dependencies: Optional[List[str]] = None

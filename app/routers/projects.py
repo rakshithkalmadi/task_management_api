@@ -10,8 +10,8 @@ Returns:
 """
 
 from fastapi import APIRouter, Depends, HTTPException
-from ..schemas import ProjectCreate, ProjectUpdate
-from ..crud import create_project, get_project, update_project, delete_project
+from ..schemas import ProjectCreate, ProjectTasks, ProjectUpdate
+from ..crud import create_project, get_project, update_project, delete_project, project_tasks
 from ..auth import get_current_active_user
 from ..models import Project, User
 
@@ -22,6 +22,9 @@ router = APIRouter()
 def create_new_project(
     project: ProjectCreate, current_user: User = Depends(get_current_active_user)
 ):
+    db_project = get_project(project.project_id)
+    if db_project:
+        raise HTTPException(status_code=400, detail="Project already exists")
     return create_project(project)
 
 
@@ -71,6 +74,29 @@ def update_existing_project(
         raise HTTPException(status_code=404, detail="Project not found")
     return update_project(project_id, project)
 
+@router.put("/{project_id}/tasks", response_model=Project)
+def add_project_tasks(
+    project_id: str,
+    tasks: ProjectTasks,
+    current_user: User = Depends(get_current_active_user),
+):
+    """Add tasks to an existing project
+
+    Args:
+        project_id (str): The ID of the project
+        tasks (ProjectTasks): The tasks to add
+        current_user (User, optional): The current active user. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HTTPException: If the project is not found
+
+    Returns:
+        Project: The updated project
+    """
+    db_project = get_project(project_id)
+    if db_project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project_tasks(project_id,tasks)
 
 @router.delete("/{project_id}", response_model=dict)
 def delete_existing_project(

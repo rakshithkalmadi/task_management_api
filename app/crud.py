@@ -4,6 +4,7 @@
 
 import datetime
 
+from fastapi import HTTPException
 from pymongo import MongoClient
 
 from constants import MONGO_URI
@@ -16,9 +17,11 @@ from .schemas import (
     LogCreate,
     NotificationCreate,
     ProjectCreate,
+    ProjectTasks,
     TaskCreate,
     TimeEntryCreate,
     UserCreate,
+    UserUpdate,
 )
 from .utils import get_password_hash  # Updated import
 
@@ -55,7 +58,7 @@ def get_user(user_id: str):
     return db.users.find_one({"user_id": user_id})
 
 
-def update_user(user_id: str, user: UserCreate):
+def update_user(user_id: str, user: UserUpdate):
     """update_user
 
     Args:
@@ -116,6 +119,38 @@ def update_project(project_id: str, project: ProjectCreate):
     """
     db.projects.update_one({"project_id": project_id}, {"$set": project.dict()})
     return db.projects.find_one({"project_id": project_id})
+
+def project_tasks(project_id: str, tasks: ProjectTasks):
+    """Add tasks to project
+
+    Args:
+        project_id (str): The ID of the project
+        tasks (ProjectTasks): The tasks to add
+
+    Returns:
+        dict: The updated project
+    """
+    # Retrieve the existing project
+    db_project = db.projects.find_one({"project_id": project_id})
+    if db_project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Get the existing tasks
+    existing_tasks = db_project.get("tasks", [])
+    
+    # Find new tasks that are not already in the existing tasks
+    new_tasks = [task for task in tasks.tasks if task not in existing_tasks]
+    
+    # Update the project with the new tasks
+    if new_tasks:
+        db.projects.update_one(
+            {"project_id": project_id}, 
+            {"$push": {"tasks": {"$each": new_tasks}}}
+        )
+    
+    # Return the updated project
+    return db.projects.find_one({"project_id": project_id})
+
 
 
 def delete_project(project_id: str):

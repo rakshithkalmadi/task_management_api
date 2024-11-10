@@ -36,6 +36,9 @@ def create_new_user(user: UserCreate):
     db_user = get_user_by_email(user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
+    db_user = get_user(user.user_id)
+    if db_user:
+        raise HTTPException(status_code=400, detail="User id already exists")
     return create_user(user)
 
 

@@ -23,6 +23,7 @@ class User(BaseModel):
     updated_at: datetime
     profile_picture: Optional[str] = None
     last_login: Optional[datetime] = None
+    projects: Optional[List[str]] = None
 
 
 class Project(BaseModel):
@@ -44,8 +45,6 @@ class Project(BaseModel):
     updated_at: datetime
     tags: List[str]
     tasks: List[str]
-    budget: Optional[float] = None
-    actual_cost: Optional[float] = None
     milestones: Optional[List[str]] = None
 
 
@@ -65,7 +64,8 @@ class Task(BaseModel):
     created_at: datetime
     updated_at: datetime
     parent_id: Optional[str] = None
-    sub_tasks: List[str]
+    sub_tasks: Optional[List[str]] = None
+    tags: Optional[List[str]] = None
     estimated_time: Optional[int] = None
     actual_time: Optional[int] = None
     dependencies: Optional[List[str]] = None
@@ -86,7 +86,8 @@ class Log(BaseModel):
 
 
 class Notification(BaseModel):
-    """Notification Model
+    """Notification Mode
+    l
 
     Args:
         BaseModel (_type_): _description_
