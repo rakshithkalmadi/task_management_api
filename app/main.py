@@ -22,7 +22,13 @@ from .routers import (
 )
 
 app = FastAPI()
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(auth_router, prefix="", tags=["auth"])
 app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(projects.router, prefix="/projects", tags=["projects"])
