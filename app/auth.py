@@ -75,6 +75,19 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
+@router.post("/verify-token")
+def verify_token(token: str):
+    """
+    API to verify if the JWT token is valid.
+    :param token: The JWT token as a string.
+    """
+    try:
+        # Decode and verify the token
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return {"message": "Token is valid", "payload": payload}
+    except JWTError as e:
+        # Handle invalid or expired token
+        raise HTTPException(status_code=401, detail="Invalid or expired token") from e
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     """get_current_user
