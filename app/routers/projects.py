@@ -14,6 +14,7 @@ from ..schemas import ProjectCreate, ProjectTasks, ProjectUpdate
 from ..crud import create_project, get_project, update_project, delete_project, project_tasks
 from ..auth import get_current_active_user
 from ..models import Project, User
+from ..crud import update_user_projects
 
 router = APIRouter()
 
@@ -25,6 +26,11 @@ def create_new_project(
     db_project = get_project(project.project_id)
     if db_project:
         raise HTTPException(status_code=400, detail="Project already exists")
+    current_user_data = User(**current_user)
+    if current_user_data.projects is None:
+        current_user_data.projects = []
+    current_user_data.projects.append(project.project_id)
+    update_user_projects(current_user_data.user_id, current_user_data.projects)
     return create_project(project)
 
 

@@ -6,7 +6,7 @@ import datetime
 
 from fastapi import HTTPException
 from pymongo import MongoClient
-
+from typing import List, Optional
 from constants import MONGO_URI
 
 from .schemas import (
@@ -70,6 +70,11 @@ def update_user(user_id: str, user: UserUpdate):
     """
     db.users.update_one({"user_id": user_id}, {"$set": user.dict()})
     return db.users.find_one({"user_id": user_id})
+
+def update_user_projects(user_id: str, projects: List[str]):
+    db.users.update_one(
+        {"user_id": user_id}, {"$set": {"projects": projects}}
+    )
 
 
 def delete_user(user_id: str):

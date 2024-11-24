@@ -31,6 +31,7 @@ class UserCreate(BaseModel):
     password: str
     created_at: datetime
     updated_at: datetime
+    projects: List[str] = []
 
 
 class UserUpdate(BaseModel):
@@ -45,6 +46,7 @@ class UserUpdate(BaseModel):
     # password: Optional[str] = None
     profile_picture: Optional[str] = None
     updated_at: datetime
+    projects: Optional[List[str]] = None
 
 
 class ProjectCreate(BaseModel):
