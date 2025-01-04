@@ -11,15 +11,10 @@ client = MongoClient(MONGO_URI)
 db = client.task_management
 
 
+def get_user_by_user_id(user_id: str):
+    return db.users.find_one({"user_id": user_id})
+
 def get_user_by_email(email: str):
-    """Get the user data by using mailid
-
-    Args:
-        email (str): Email id of the user.
-
-    Returns:
-        dict: Returns the user data
-    """
     return db.users.find_one({"email": email})
 
 

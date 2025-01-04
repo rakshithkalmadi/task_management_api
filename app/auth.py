@@ -18,7 +18,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 
 from .models import User
-from .utils import get_user_by_email, verify_password
+from .utils import get_user_by_user_id, verify_password
 
 router = APIRouter()
 
@@ -62,7 +62,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     Returns:
         _type_: _description_
     """
-    user = get_user_by_email(form_data.username)
+    user = get_user_by_user_id(form_data.username)
     if not user or not verify_password(form_data.password, user["password"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -71,7 +71,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user["email"]}, expires_delta=access_token_expires
+        data={"sub": user["user_id"]}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -110,12 +110,12 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
+        user_id: str = payload.get("sub")
+        if user_id is None:
             raise credentials_exception
     except JWTError as exc:
         raise credentials_exception from exc
-    user = get_user_by_email(email)
+    user = get_user_by_user_id(user_id)
     if user is None:
         raise credentials_exception
     return user
