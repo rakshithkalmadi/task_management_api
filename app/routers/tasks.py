@@ -11,7 +11,7 @@ Returns:
 
 from fastapi import APIRouter, Depends, HTTPException
 from ..schemas import TaskCreate, TaskUpdate
-from ..crud import create_task, get_task, update_task, delete_task
+from ..crud import create_task, get_task, update_task, delete_task,get_project,get_project_tasks
 from ..auth import get_current_active_user
 from ..models import Task, User
 
@@ -36,6 +36,14 @@ def create_new_task(
         raise HTTPException(status_code=400, detail="Task already exists")
     return create_task(task)
 
+@router.get("/{project_id}", response_model=list)
+def get_all_task(project_id: str, 
+                 current_user: User = Depends(get_current_active_user)
+                 ):
+    db_project = get_project_tasks(project_id)
+    if db_project is None:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return [db_project]
 
 @router.get("/{task_id}", response_model=Task)
 def read_task(task_id: str, current_user: User = Depends(get_current_active_user)):

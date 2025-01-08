@@ -109,7 +109,18 @@ def get_project(project_id: str):
     Returns:
         _type_: _description_
     """
-    return db.projects.find_one({"project_id": project_id})
+    return db.projects.find_one({"project_id": project_id},{"_id": 0})
+
+def get_projects_by_user(user_id: str):
+    """get_projects_by_user
+
+    Args:
+        user_id (str): The ID of the user
+
+    Returns:
+        List[Project]: A list of projects associated with the user
+    """
+    return list(db.projects.find({"access.admin": user_id},{"_id": 0}))
 
 
 def update_project(project_id: str, project: ProjectCreate):
@@ -155,6 +166,32 @@ def project_tasks(project_id: str, tasks: ProjectTasks):
     
     # Return the updated project
     return db.projects.find_one({"project_id": project_id})
+
+def get_project_tasks(project_id: str):
+    """Fetch all tasks under a project
+
+    Args:
+        project_id (str): The ID of the project
+
+    Returns:
+        list: The list of tasks under the project with details
+    """
+    # Retrieve the existing project
+    db_project = db.projects.find_one({"project_id": project_id})
+    if db_project is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    # Get the existing tasks
+    task_ids = db_project.get("tasks", [])
+    
+    if not task_ids:
+        return []
+
+    # Fetch details for all tasks in bulk
+    tasks_with_details = list(db.tasks.find({"task_id": {"$in": task_ids}},{"_id": 0}))
+    
+    # Return the list of tasks with details
+    return tasks_with_details
 
 
 

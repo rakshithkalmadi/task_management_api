@@ -11,7 +11,7 @@ Returns:
 
 from fastapi import APIRouter, Depends, HTTPException
 from ..schemas import ProjectCreate, ProjectTasks, ProjectUpdate
-from ..crud import create_project, get_project, update_project, delete_project, project_tasks
+from ..crud import create_project, get_project,get_projects_by_user, update_project, delete_project, project_tasks
 from ..auth import get_current_active_user
 from ..models import Project, User
 from ..crud import update_user_projects
@@ -26,12 +26,26 @@ def create_new_project(
     db_project = get_project(project.project_id)
     if db_project:
         raise HTTPException(status_code=400, detail="Project already exists")
+    
+    # Add current user to access as admin
     current_user_data = User(**current_user)
+    if project.access is None:
+        project.access = {}
+    project.access["admin"] = current_user_data.user_id
+    
     if current_user_data.projects is None:
         current_user_data.projects = []
     current_user_data.projects.append(project.project_id)
     update_user_projects(current_user_data.user_id, current_user_data.projects)
     return create_project(project)
+
+@router.get("/", response_model=list)
+def get_user_projects(current_user: User = Depends(get_current_active_user)):
+    print(current_user["user_id"])
+    db_projects = get_projects_by_user(current_user["user_id"])
+    if db_projects is None:
+        raise HTTPException(status_code=404, detail="Project not found")    
+    return db_projects
 
 
 @router.get("/{project_id}", response_model=Project)
