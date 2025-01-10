@@ -36,7 +36,7 @@ def create_new_task(
         raise HTTPException(status_code=400, detail="Task already exists")
     return create_task(task)
 
-@router.get("/{project_id}", response_model=list)
+@router.get("/all/{project_id}", response_model=list)
 def get_all_task(project_id: str, 
                  current_user: User = Depends(get_current_active_user)
                  ):

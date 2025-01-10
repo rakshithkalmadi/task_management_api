@@ -179,7 +179,7 @@ def get_project_tasks(project_id: str):
     # Retrieve the existing project
     db_project = db.projects.find_one({"project_id": project_id})
     if db_project is None:
-        raise HTTPException(status_code=404, detail="Project not found")
+        raise HTTPException(status_code=404, detail="Project Tasks not found")
     
     # Get the existing tasks
     task_ids = db_project.get("tasks", [])

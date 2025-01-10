@@ -54,4 +54,4 @@ app.include_router(tasks.router, prefix="/tasks", tags=["tasks"])
 @app.get("/")
 def read_root():
     """Test Router"""
-    return {"message": "Welcome to the Task Management API v1.0.1"}
+    return {"message": "Welcome to the Task Management API v1.0.2"}
