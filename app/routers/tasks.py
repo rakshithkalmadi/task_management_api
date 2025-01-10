@@ -43,7 +43,7 @@ def get_all_task(project_id: str,
     db_project = get_project_tasks(project_id)
     if db_project is None:
         raise HTTPException(status_code=404, detail="Task not found")
-    return [db_project]
+    return db_project
 
 @router.get("/{task_id}", response_model=Task)
 def read_task(task_id: str, current_user: User = Depends(get_current_active_user)):
