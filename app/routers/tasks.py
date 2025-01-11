@@ -71,18 +71,18 @@ def update_existing_task(
     task: TaskUpdate,
     current_user: User = Depends(get_current_active_user),
 ):
-    """update_existing_task
+    """Update specific task fields
 
     Args:
-        task_id (str): _description_
-        task (TaskUpdate): _description_
-        current_user (User, optional): _description_. Defaults to Depends(get_current_active_user).
+        task_id (str): Task identifier
+        task (TaskUpdate): Fields to update
+        current_user (User): Current authenticated user
 
     Raises:
-        HTTPException: _description_
+        HTTPException: 404 if task not found
 
     Returns:
-        _type_: _description_
+        Task: Updated task
     """
     db_task = get_task(task_id)
     if db_task is None:

@@ -19,6 +19,7 @@ from .schemas import (
     ProjectCreate,
     ProjectTasks,
     TaskCreate,
+    TaskUpdate,
     TimeEntryCreate,
     UserCreate,
     UserUpdate,
@@ -230,17 +231,26 @@ def get_task(task_id: str):
     return db.tasks.find_one({"task_id": task_id})
 
 
-def update_task(task_id: str, task: TaskCreate):
-    """update_task
+def update_task(task_id: str, task_update: TaskUpdate):
+    """Update specific task fields
 
     Args:
-        task_id (str): _description_
-        task (TaskCreate): _description_
+        task_id (str): Task identifier
+        task_update (TaskUpdate): Fields to update
 
     Returns:
-        _type_: _description_
+        dict: Updated task
     """
-    db.tasks.update_one({"task_id": task_id}, {"$set": task.dict()})
+    # Get only fields that were provided (not None)
+    update_data = task_update.dict(exclude_unset=True)
+    
+    # If there are fields to update
+    if update_data:
+        db.tasks.update_one(
+            {"task_id": task_id},
+            {"$set": update_data}
+        )
+    
     return db.tasks.find_one({"task_id": task_id})
 
 
