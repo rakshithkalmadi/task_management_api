@@ -232,26 +232,35 @@ def get_task(task_id: str):
 
 
 def update_task(task_id: str, task_update: TaskUpdate):
-    """Update specific task fields
-
+    """Update specific task fields while preserving existing data
+    
     Args:
         task_id (str): Task identifier
         task_update (TaskUpdate): Fields to update
-
+        
     Returns:
-        dict: Updated task
+        dict: Updated task with merged data
     """
-    # Get only fields that were provided (not None)
-    update_data = task_update.dict(exclude_unset=True)
+    # Get existing task first
+    existing_task = db.tasks.find_one({"task_id": task_id})
+    if not existing_task:
+        return None
+        
+    # Filter out None values from update request
+    update_data = {
+        k: v for k, v in task_update.dict(exclude_unset=True).items() 
+        if v is not None
+    }
     
-    # If there are fields to update
     if update_data:
+        # Only update provided fields
         db.tasks.update_one(
             {"task_id": task_id},
             {"$set": update_data}
         )
-    
-    return db.tasks.find_one({"task_id": task_id})
+        
+    # Return task with merged data
+    return db.tasks.find_one({"task_id": task_id}, {"_id": 0})
 
 
 def delete_task(task_id: str):
