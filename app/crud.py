@@ -177,20 +177,26 @@ def get_project_tasks(project_id: str):
     Returns:
         list: The list of tasks under the project with details
     """
-    # Retrieve the existing project
-    db_project = db.projects.find_one({"project_id": project_id})
-    if db_project is None:
-        raise HTTPException(status_code=404, detail="Project Tasks not found")
+    # # Retrieve the existing project
+    # db_project = db.projects.find_one({"project_id": project_id})
+    # if db_project is None:
+    #     raise HTTPException(status_code=404, detail="Project Tasks not found")
     
-    # Get the existing tasks
-    task_ids = db_project.get("tasks", [])
+    # # Get the existing tasks
+    # task_ids = db_project.get("tasks", [])
     
-    if not task_ids:
-        return []
+    
 
     # Fetch details for all tasks in bulk
-    tasks_with_details = list(db.tasks.find({"task_id": {"$in": task_ids}},{"_id": 0}))
-    
+    tasks_with_details = list(db.tasks.find({"parent_id": project_id},{"_id": 0}))
+    if not tasks_with_details:
+        return []
+    # Return the list of tasks with details
+    return tasks_with_details
+def get_task_tasks(task_id: str):
+    tasks_with_details = list(db.tasks.find({"parent_id": task_id},{"_id": 0}))
+    if not tasks_with_details:
+        return []
     # Return the list of tasks with details
     return tasks_with_details
 

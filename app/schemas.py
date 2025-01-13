@@ -4,7 +4,7 @@ Schemas for Application
 
 from datetime import datetime
 from typing import List, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel,Field
 
 
 class Token(BaseModel):
@@ -113,8 +113,8 @@ class TaskCreate(BaseModel):
     parent_id: Optional[str] = None
     sub_tasks: Optional[List[str]] = None
     tags: Optional[List[str]] = None
-    created_at: datetime
-    updated_at: datetime
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
 class TaskUpdate(BaseModel):

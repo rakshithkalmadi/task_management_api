@@ -13,12 +13,13 @@ Returns:
 from datetime import datetime, timedelta
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Body
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
+from pydantic import BaseModel, EmailStr
 
 from .models import User
-from .utils import get_user_by_user_id, verify_password
+from .utils import get_user_by_user_id, verify_password, get_user_by_email
 
 router = APIRouter()
 
@@ -133,3 +134,40 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
     # if current_user.disabled:
     #     raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+@router.post("/login", response_model=dict)
+async def login(login_data: LoginRequest):
+    """Login with email and password
+    
+    Args:
+        login_data: Login credentials containing email and password
+    
+    Returns:
+        dict: Access token and token type
+    """
+    # Get user by email instead of user_id
+    user = get_user_by_email(login_data.email)  # You'll need to implement this function
+    
+    if not user or not verify_password(login_data.password, user["password"]):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user["user_id"]}, 
+        expires_delta=access_token_expires
+    )
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user_id": user["user_id"],
+        "email": user["email"]
+    }
