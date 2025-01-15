@@ -31,6 +31,8 @@ def create_new_task(
     Returns:
         _type_: _description_
     """
+    # Prefix the project ID with the user ID
+    task.task_id = f"{current_user['user_id']}_{task.task_id}"
     db_task = get_task(task.task_id)
     if db_task:
         raise HTTPException(status_code=400, detail="Task already exists")

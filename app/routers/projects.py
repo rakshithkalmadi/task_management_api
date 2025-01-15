@@ -23,6 +23,9 @@ router = APIRouter()
 def create_new_project(
     project: ProjectCreate, current_user: User = Depends(get_current_active_user)
 ):
+    # Prefix the project ID with the user ID
+    project.project_id = f"{current_user['user_id']}_{project.project_id}"
+    
     db_project = get_project(project.project_id)
     if db_project:
         raise HTTPException(status_code=400, detail="Project already exists")

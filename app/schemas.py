@@ -29,8 +29,8 @@ class UserCreate(BaseModel):
     name: str
     email: str
     password: str
-    created_at: datetime
-    updated_at: datetime
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
     projects: List[str] = []
 
 
@@ -61,13 +61,13 @@ class ProjectCreate(BaseModel):
     description: str
     start_date: datetime
     due_date: datetime
-    access: dict
+    access: Optional[dict] = None
     priority: str
     status: str
     tags: List[str]
     tasks: Optional[List[str]] = None
-    created_at: datetime
-    updated_at: datetime
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
 class ProjectUpdate(BaseModel):
